@@ -13,6 +13,12 @@ const COLORS = [
   "purple"
 ];
 
+const matches = [];
+
+let eventTargets = [];
+
+let activePair = [];
+
 // here is a helper function to shuffle an array
 // it returns the same array with values shuffled
 // it is based on an algorithm called Fisher Yates if you want ot research more
@@ -60,7 +66,36 @@ function createDivsForColors(colorArray) {
 // TODO: Implement this function!
 function handleCardClick(event) {
   // you can use event.target to see which element was clicked
-  console.log("you just clicked", event.target);
+  eventTargets.push(event.target);
+  if(eventTargets[0] !== eventTargets[1]) {
+    let color = event.target.className;
+    event.target.style.backgroundColor = color;
+    if(matches.indexOf(color) < 0 && activePair.length < 2) {
+      activePair.push(color);
+      if(activePair.length === 2) {
+        if(activePair[0] !== activePair[1]) {
+          setTimeout(function() {
+            let firstColor = document.querySelectorAll(`.${activePair[0]}`);
+            for(let i = 0; i < firstColor.length; i++) {
+              firstColor[i].style.backgroundColor = null;
+            }
+            let secondColor = document.querySelectorAll(`.${activePair[1]}`);
+            for(let i = 0; i < secondColor.length; i++) {
+              secondColor[i].style.backgroundColor = null;
+            }
+            activePair = [];
+            eventTargets = [];
+          }, 1000);
+        } else {
+          matches.push(color);
+          activePair = [];
+          eventTargets = [];
+        }
+      }
+    }
+  } else {
+    eventTargets.pop();
+  }
 }
 
 // when the DOM loads
